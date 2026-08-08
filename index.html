@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unified Productivity App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; }
+    header { background:#2196f3; color:#fff; padding:10px; text-align:center; }
+    .container { display:grid; grid-template-columns:1fr 3fr; gap:20px; padding:20px; }
+    @media (max-width:768px){ .container { grid-template-columns:1fr; } }
+    h3 { margin-top:20px; }
+    #helpWidget { position:fixed; bottom:20px; right:20px; }
+    #helpBox { background:#f9f9f9; border:1px solid #ccc; padding:10px; width:250px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Unified Productivity App</h1>
+</header>
+
+<div class="container">
+  <!-- Upload Panel -->
+  <section id="uploadPanel">
+    <h3>Upload Documents</h3>
+    <input type="file" multiple>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard">
+    <h3>Dashboard</h3>
+    <div id="dashboardContent">KPIs and Charts will appear here.</div>
+  </section>
+</div>
+
+<!-- PPTX Editor -->
+<section id="pptxEditor">
+  <h3>PPTX Editor</h3>
+  <button onclick="addSmartSlide()">➕ Add Smart Slide</button>
+  <div id="slides"></div>
+</section>
+
+<!-- Presentation Mode -->
+<section id="presentationMode">
+  <h3>Presentation Mode</h3>
+  <div id="presentation"></div>
+  <button onclick="prevSlide()">⬅️ Previous</button>
+  <button onclick="nextSlide()">➡️ Next</button>
+  <button onclick="toggleFullscreen()">🖥️ Fullscreen</button>
+</section>
+
+<!-- Audience Interaction -->
+<section id="audienceInteraction">
+  <h3>Audience Interaction</h3>
+  <button onclick="startPoll()">📊 Launch Poll</button>
+  <div id="pollResults"></div>
+</section>
+
+<!-- Analytics -->
+<section id="analyticsSection">
+  <h3>Post-Presentation Analytics</h3>
+  <button onclick="generateAnalytics()">📊 Generate Report</button>
+  <div id="analytics"></div>
+</section>
+
+<!-- Benchmarking -->
+<section id="benchmarkingSection">
+  <h3>Benchmarking</h3>
+  <button onclick="generateBenchmark()">📊 Compare Presentations</button>
+  <div id="benchmark"></div>
+</section>
+
+<!-- Help Widget -->
+<div id="helpWidget">
+  <button onclick="toggleHelp()">❓ Help</button>
+  <div id="helpBox" style="display:none;">
+    <input type="text" id="helpInput" placeholder="Ask a question...">
+    <button onclick="getHelp()">Ask</button>
+    <div id="helpResponse"></div>
+  </div>
+</div>
+
+<!-- Guided Tour -->
+<button onclick="startTour()">🚀 Start Guided Tour</button>
+
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
+
+<script>
+let pres=new PptxGenJS();
+let currentSlide=0;
+
+// PPTX Smart Slide
+function addSmartSlide(){
+  const slide=pres.addSlide();
+  slide.addText("Title",{x:1,y:0.5,fontSize:24,bold:true});
+  slide.addText("Bullet",{x:1,y:1.5,fontSize:18});
+  renderSlides();
+}
+function renderSlides(){
+  const container=document.getElementById("slides");
+  container.innerHTML="";
+  pres.slides.forEach((s,i)=>{
+    const div=document.createElement("div");
+    div.textContent="Slide "+(i+1);
+    container.appendChild(div);
+  });
+}
+
+// Presentation Mode
+function renderPresentation(){
+  document.getElementById("presentation").innerHTML="Showing Slide "+(currentSlide+1);
+}
+function nextSlide(){ if(currentSlide<pres.slides.length-1){currentSlide++;renderPresentation();} }
+function prevSlide(){ if(currentSlide>0){currentSlide--;renderPresentation();} }
+function toggleFullscreen(){
+  const elem=document.getElementById("presentation");
+  if(elem.requestFullscreen){elem.requestFullscreen();}
+}
+
+// Audience Interaction
+let pollVotes={Yes:0,No:0};
+function startPoll(){ document.getElementById("pollResults").innerHTML="Poll Active: Do you agree? Yes/No"; }
+function receiveVote(option){ pollVotes[option]++; renderResults(); }
+function renderResults(){ document.getElementById("pollResults").innerHTML=`Yes: ${pollVotes.Yes}, No: ${pollVotes.No}`; }
+
+// Analytics
+let interactions=[{slide:1,polls:20,questions:5,reactions:15},{slide:2,polls:35,questions:2,reactions:40}];
+function generateAnalytics(){
+  let report="<h4>Analytics</h4>";
+  interactions.forEach(i=>{ report+=`<p>Slide ${i.slide}: Polls=${i.polls}, Q&A=${i.questions}, Reactions=${i.reactions}</p>`; });
+  document.getElementById("analytics").innerHTML=report;
+}
+
+// Benchmarking
+let presentations=[{title:"Q1 Sales",polls:100,questions:25,reactions:80},{title:"Q2 Sales",polls:150,questions:40,reactions:120}];
+function generateBenchmark(){
+  let report="<h4>Benchmark Report</h4>";
+  presentations.forEach(p=>{ report+=`<p>${p.title}: Polls=${p.polls}, Q&A=${p.questions}, Reactions=${p.reactions}</p>`; });
+  document.getElementById("benchmark").innerHTML=report;
+}
+
+// Help Widget
+function toggleHelp(){
+  const box=document.getElementById("helpBox");
+  box.style.display=(box.style.display==="none")?"block":"none";
+}
+function getHelp(){
+  const q=document.getElementById("helpInput").value.toLowerCase();
+  let response="Sorry, I don’t know that yet.";
+  if(q.includes("upload")) response="To upload, click the Upload Panel and select your file.";
+  if(q.includes("excel")) response="Upload Excel in Dashboard Converter to auto-generate charts and KPIs.";
+  if(q.includes("pptx")) response="Open PPTX Editor to add, remove, or reorder slides.";
+  document.getElementById("helpResponse").innerHTML=response;
+}
+
+// Guided Tour
+function startTour(){
+  introJs().setOptions({
+    steps:[
+      { intro:"Welcome to Unified App! Let's take a quick tour." },
+      { element:"#uploadPanel", intro:"Upload documents here." },
+      { element:"#dashboard", intro:"View dashboards with KPIs and charts." },
+      { element:"#pptxEditor", intro:"Edit presentations: add, remove, reorder slides." },
+      { element:"#helpWidget", intro:"Need help? Ask questions here anytime." }
+    ]
+  }).start();
+}
+</script>
+</body>
+</html>
