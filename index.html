@@ -40,6 +40,33 @@
   </section>
 </div>
 
+<!-- Financial Calculators -->
+<section id="financeTools">
+  <h3>Financial Calculators</h3>
+  <label>Principal: <input type="number" id="principal"></label>
+  <label>Rate (%): <input type="number" id="rate"></label>
+  <label>Months: <input type="number" id="months"></label>
+  <button onclick="showEMI()">Calculate EMI</button>
+  <div id="emiResult"></div>
+</section>
+
+<!-- Document Comparison -->
+<section id="docComparison">
+  <h3>Document Comparison</h3>
+  <textarea id="doc1" placeholder="Paste Document 1"></textarea>
+  <textarea id="doc2" placeholder="Paste Document 2"></textarea>
+  <button onclick="compareDocs()">Compare</button>
+  <div id="comparisonResult"></div>
+</section>
+
+<!-- Collaboration Tools -->
+<section id="collaboration">
+  <h3>Collaboration Tools</h3>
+  <input type="text" id="commentInput" placeholder="Add a comment">
+  <button onclick="addComment()">Add Comment</button>
+  <div id="comments"></div>
+</section>
+
 <!-- PPTX Editor -->
 <section id="pptxEditor">
   <h3>PPTX Editor</h3>
@@ -54,6 +81,13 @@
   <button onclick="prevSlide()">⬅️ Previous</button>
   <button onclick="nextSlide()">➡️ Next</button>
   <button onclick="toggleFullscreen()">🖥️ Fullscreen</button>
+</section>
+
+<!-- Cloud Sync Remote Control -->
+<section id="cloudSync">
+  <h3>Cloud Sync Remote Control</h3>
+  <button onclick="syncPresentation()">🔄 Sync Presentation</button>
+  <div id="syncStatus"></div>
 </section>
 
 <!-- Audience Interaction -->
@@ -105,13 +139,43 @@ function loadDashboard(){
     type:"bar",
     data:{
       labels:["Jan","Feb","Mar"],
-      datasets:[{label:"Sales",data:[30,50,70],backgroundColor:"#2196f3"}]
+      datasets:[{label:"Sales",data:[25,45,65],backgroundColor:"#2196f3"}]
     }
   });
 }
 window.onload=()=>{ loadDashboard(); };
 
-// PPTX Editor (simple simulation)
+// Financial Calculator
+function showEMI(){
+  let p=parseFloat(document.getElementById("principal").value);
+  let r=parseFloat(document.getElementById("rate").value)/12/100;
+  let n=parseInt(document.getElementById("months").value);
+  if(p && r && n){
+    let emi=(p*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+    document.getElementById("emiResult").innerHTML="Monthly EMI: ₹"+emi.toFixed(2);
+  }
+}
+
+// Document Comparison
+function compareDocs(){
+  let d1=document.getElementById("doc1").value;
+  let d2=document.getElementById("doc2").value;
+  let result=(d1===d2)?"Documents are identical":"Documents differ";
+  document.getElementById("comparisonResult").innerHTML=result;
+}
+
+// Collaboration
+function addComment(){
+  let c=document.getElementById("commentInput").value;
+  if(c){
+    let div=document.createElement("div");
+    div.textContent=c;
+    document.getElementById("comments").appendChild(div);
+    document.getElementById("commentInput").value="";
+  }
+}
+
+// PPTX Editor
 let slides=[];
 function addSmartSlide(){
   slides.push("Slide "+(slides.length+1));
@@ -139,6 +203,11 @@ function toggleFullscreen(){
   if(elem.requestFullscreen){elem.requestFullscreen();}
 }
 
+// Cloud Sync
+function syncPresentation(){
+  document.getElementById("syncStatus").innerHTML="Presentation synced to cloud.";
+}
+
 // Audience Interaction
 let pollVotes={Yes:0,No:0};
 function startPoll(){ document.getElementById("pollResults").innerHTML="Poll Active: Do you agree? Yes/No"; }
@@ -156,37 +225,4 @@ function generateAnalytics(){
 // Benchmarking
 let presentations=[{title:"Q1 Sales",polls:100,questions:25,reactions:80},{title:"Q2 Sales",polls:150,questions:40,reactions:120}];
 function generateBenchmark(){
-  let report="<h4>Benchmark Report</h4>";
-  presentations.forEach(p=>{ report+=`<p>${p.title}: Polls=${p.polls}, Q&A=${p.questions}, Reactions=${p.reactions}</p>`; });
-  document.getElementById("benchmark").innerHTML=report;
-}
-
-// Help Widget
-function toggleHelp(){
-  const box=document.getElementById("helpBox");
-  box.style.display=(box.style.display==="none")?"block":"none";
-}
-function getHelp(){
-  const q=document.getElementById("helpInput").value.toLowerCase();
-  let response="Sorry, I don’t know that yet.";
-  if(q.includes("upload")) response="To upload, click the Upload Panel and select your file.";
-  if(q.includes("excel")) response="Upload Excel in Dashboard Converter to auto-generate charts and KPIs.";
-  if(q.includes("pptx")) response="Open PPTX Editor to add, remove, or reorder slides.";
-  document.getElementById("helpResponse").innerHTML=response;
-}
-
-// Guided Tour
-function startTour(){
-  introJs().setOptions({
-    steps:[
-      { intro:"Welcome to Unified App! Let's take a quick tour." },
-      { element:"#uploadPanel", intro:"Upload documents here." },
-      { element:"#dashboard", intro:"View dashboards with KPIs and charts." },
-      { element:"#pptxEditor", intro:"Edit presentations: add, remove, reorder slides." },
-      { element:"#helpWidget", intro:"Need help? Ask questions here anytime." }
-    ]
-  }).start();
-}
-</script>
-</body>
-</html>
+  let report="<h4>Benchmark Report</
