@@ -4,17 +4,13 @@
   <meta charset="UTF-8">
   <title>Unified Productivity & Insights App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
   <style>
     body { font-family: Arial, sans-serif; margin:0; padding:0; }
     header { background:#2196f3; color:#fff; padding:10px; text-align:center; }
     .container { display:grid; grid-template-columns:1fr 3fr; gap:20px; padding:20px; }
     @media (max-width:768px){ .container { grid-template-columns:1fr; } }
     h3 { margin-top:20px; }
-    button {
-      background:#2196f3; color:#fff; border:none;
-      padding:8px 12px; margin:5px; cursor:pointer;
-    }
+    button { background:#2196f3; color:#fff; border:none; padding:8px 12px; margin:5px; cursor:pointer; }
     button:hover { background:#1976d2; }
     #helpWidget { position:fixed; bottom:20px; right:20px; }
     #helpBox { background:#f9f9f9; border:1px solid #ccc; padding:10px; width:250px; }
@@ -29,20 +25,16 @@
 </header>
 
 <div class="container">
-  <!-- Upload Panel -->
   <section id="uploadPanel">
     <h3>Upload Documents</h3>
     <input type="file" multiple>
   </section>
-
-  <!-- Dashboard -->
   <section id="dashboard">
     <h3>Dashboard</h3>
     <canvas id="dashboardChart"></canvas>
   </section>
 </div>
 
-<!-- Financial Calculators -->
 <section id="financeTools">
   <h3>Financial Calculators</h3>
   <label>Principal: <input type="number" id="principal"></label>
@@ -52,7 +44,6 @@
   <div id="emiResult"></div>
 </section>
 
-<!-- Document Comparison -->
 <section id="docComparison">
   <h3>Document Comparison</h3>
   <textarea id="doc1" placeholder="Paste Document 1"></textarea>
@@ -61,7 +52,6 @@
   <div id="comparisonResult"></div>
 </section>
 
-<!-- Collaboration Tools -->
 <section id="collaboration">
   <h3>Collaboration Tools</h3>
   <input type="text" id="commentInput" placeholder="Add a comment">
@@ -69,14 +59,12 @@
   <div id="comments"></div>
 </section>
 
-<!-- PPTX Editor -->
 <section id="pptxEditor">
   <h3>PPTX Editor</h3>
   <button onclick="addSmartSlide()">➕ Add Smart Slide</button>
   <div id="slides"></div>
 </section>
 
-<!-- Presentation Mode -->
 <section id="presentationMode">
   <h3>Presentation Mode</h3>
   <div id="presentation"></div>
@@ -85,35 +73,30 @@
   <button onclick="toggleFullscreen()">🖥️ Fullscreen</button>
 </section>
 
-<!-- Cloud Sync Remote Control -->
 <section id="cloudSync">
   <h3>Cloud Sync Remote Control</h3>
   <button onclick="syncPresentation()">🔄 Sync Presentation</button>
   <div id="syncStatus"></div>
 </section>
 
-<!-- Audience Interaction -->
 <section id="audienceInteraction">
   <h3>Audience Interaction</h3>
   <button onclick="startPoll()">📊 Launch Poll</button>
   <div id="pollResults"></div>
 </section>
 
-<!-- Analytics -->
 <section id="analyticsSection">
   <h3>Post-Presentation Analytics</h3>
   <button onclick="generateAnalytics()">📊 Generate Report</button>
   <div id="analytics"></div>
 </section>
 
-<!-- Benchmarking -->
 <section id="benchmarkingSection">
   <h3>Benchmarking</h3>
   <button onclick="generateBenchmark()">📊 Compare Presentations</button>
   <div id="benchmark"></div>
 </section>
 
-<!-- Help Widget -->
 <div id="helpWidget">
   <button onclick="toggleHelp()">❓ Help</button>
   <div id="helpBox" style="display:none;">
@@ -123,7 +106,6 @@
   </div>
 </div>
 
-<!-- Guided Tour -->
 <button onclick="startTour()">🚀 Start Guided Tour</button>
 
 <footer>
@@ -132,97 +114,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
-
 <script>
 // Dashboard Chart
 function loadDashboard(){
   const ctx=document.getElementById("dashboardChart").getContext("2d");
-  new Chart(ctx,{
-    type:"bar",
-    data:{
-      labels:["Jan","Feb","Mar"],
-      datasets:[{label:"Sales",data:[25,45,65],backgroundColor:"#2196f3"}]
-    }
-  });
-}
+  new Chart(ctx,{type:"bar",data:{labels:["Jan","Feb","Mar"],datasets:[{label:"Sales",data:[25,45,65],backgroundColor:"#2196f3"}]}});}
 window.onload=()=>{ loadDashboard(); };
 
 // Financial Calculator
-function showEMI(){
-  let p=parseFloat(document.getElementById("principal").value);
-  let r=parseFloat(document.getElementById("rate").value)/12/100;
-  let n=parseInt(document.getElementById("months").value);
-  if(p && r && n){
-    let emi=(p*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
-    document.getElementById("emiResult").innerHTML="Monthly EMI: ₹"+emi.toFixed(2);
-  }
-}
+function showEMI(){let p=parseFloat(document.getElementById("principal").value);let r=parseFloat(document.getElementById("rate").value)/12/100;let n=parseInt(document.getElementById("months").value);if(p&&r&&n){let emi=(p*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);document.getElementById("emiResult").innerHTML="Monthly EMI: ₹"+emi.toFixed(2);}}
 
 // Document Comparison
-function compareDocs(){
-  let d1=document.getElementById("doc1").value;
-  let d2=document.getElementById("doc2").value;
-  let result=(d1===d2)?"Documents are identical":"Documents differ";
-  document.getElementById("comparisonResult").innerHTML=result;
-}
+function compareDocs(){let d1=document.getElementById("doc1").value;let d2=document.getElementById("doc2").value;let result=(d1===d2)?"Documents are identical":"Documents differ";document.getElementById("comparisonResult").innerHTML=result;}
 
 // Collaboration
-function addComment(){
-  let c=document.getElementById("commentInput").value;
-  if(c){
-    let div=document.createElement("div");
-    div.textContent=c;
-    document.getElementById("comments").appendChild(div);
-    document.getElementById("commentInput").value="";
-  }
-}
+function addComment(){let c=document.getElementById("commentInput").value;if(c){let div=document.createElement("div");div.textContent=c;document.getElementById("comments").appendChild(div);document.getElementById("commentInput").value="";}}
 
 // PPTX Editor
-let slides=[];
-function addSmartSlide(){
-  slides.push("Slide "+(slides.length+1));
-  renderSlides();
-}
-function renderSlides(){
-  const container=document.getElementById("slides");
-  container.innerHTML="";
-  slides.forEach(s=>{
-    const div=document.createElement("div");
-    div.textContent=s;
-    container.appendChild(div);
-  });
-}
+let slides=[];function addSmartSlide(){slides.push("Slide "+(slides.length+1));renderSlides();}
+function renderSlides(){const container=document.getElementById("slides");container.innerHTML="";slides.forEach(s=>{const div=document.createElement("div");div.textContent=s;container.appendChild(div);});}
 
 // Presentation Mode
-let currentSlide=0;
-function renderPresentation(){
-  document.getElementById("presentation").innerHTML=slides[currentSlide]||"No slides yet";
-}
-function nextSlide(){ if(currentSlide<slides.length-1){currentSlide++;renderPresentation();} }
-function prevSlide(){ if(currentSlide>0){currentSlide--;renderPresentation();} }
-function toggleFullscreen(){
-  const elem=document.getElementById("presentation");
-  if(elem.requestFullscreen){elem.requestFullscreen();}
-}
+let currentSlide=0;function renderPresentation(){document.getElementById("presentation").innerHTML=slides[currentSlide]||"No slides yet";}
+function nextSlide(){if(currentSlide<slides.length-1){currentSlide++;renderPresentation();}}
+function prevSlide(){if(currentSlide>0){currentSlide--;renderPresentation();}}
+function toggleFullscreen(){const elem=document.getElementById("presentation");if(elem.requestFullscreen){elem.requestFullscreen();}}
 
 // Cloud Sync
-function syncPresentation(){
-  document.getElementById("syncStatus").innerHTML="Presentation synced to cloud.";
-}
+function syncPresentation(){document.getElementById("syncStatus").innerHTML="Presentation synced to cloud.";}
 
 // Audience Interaction
-let pollVotes={Yes:0,No:0};
-function startPoll(){ document.getElementById("pollResults").innerHTML="Poll Active: Do you agree? Yes/No"; }
-function receiveVote(option){ pollVotes[option]++; renderResults(); }
-function renderResults(){ document.getElementById("pollResults").innerHTML=`Yes: ${pollVotes.Yes}, No: ${pollVotes.No}`; }
+let pollVotes={Yes:0,No:0};function startPoll(){document.getElementById("pollResults").innerHTML="Poll Active: Do you agree? Yes/No";}
+function receiveVote(option){pollVotes[option]++;renderResults();}
+function renderResults(){document.getElementById("pollResults").innerHTML=`Yes: ${pollVotes.Yes}, No: ${pollVotes.No}`;}
 
 // Analytics
 let interactions=[{slide:1,polls:20,questions:5,reactions:15},{slide:2,polls:35,questions:2,reactions:40}];
-function generateAnalytics(){
-  let report="<h4>Analytics</h4>";
-  interactions.forEach(i=>{ report+=`<p>Slide ${i.slide}: Polls=${i.polls}, Q&A=${i.questions}, Reactions=${i.reactions}</p>`; });
-  document.getElementById("analytics").innerHTML=report;
-}
+function generateAnalytics(){let report="<h4>Analytics</h4>";interactions.forEach(i=>{report+=`<p>Slide ${i.slide}: Polls=${i.polls}, Q&A=${i.questions}, Reactions=${i.reactions}</p>`;});document.getElementById("analytics").innerHTML=report;}
 
 // Benchmarking
-let presentations=[{title:"Q1 Sales",polls:100,questions:25,reactions:80
+let presentations=[{title:"Q1 Sales",polls:100,questions:25,reactions:80},{title:"Q2 Sales",polls:150,questions:40,reactions:120}];
+function generateBenchmark(){let report="<h4>Benchmark Report</h4>";presentations.forEach(p=>{report+=`<p>${p.title}: Polls=${
