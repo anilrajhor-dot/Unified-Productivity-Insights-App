@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Unified Productivity App</title>
+  <title>Unified Productivity & Insights App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Manifest for PWA -->
   <link rel="manifest" href="manifest.json">
   <style>
     body { font-family: Arial, sans-serif; margin:0; padding:0; }
@@ -12,8 +11,14 @@
     .container { display:grid; grid-template-columns:1fr 3fr; gap:20px; padding:20px; }
     @media (max-width:768px){ .container { grid-template-columns:1fr; } }
     h3 { margin-top:20px; }
+    button {
+      background:#2196f3; color:#fff; border:none;
+      padding:8px 12px; margin:5px; cursor:pointer;
+    }
+    button:hover { background:#1976d2; }
     #helpWidget { position:fixed; bottom:20px; right:20px; }
     #helpBox { background:#f9f9f9; border:1px solid #ccc; padding:10px; width:250px; }
+    footer { background:#2196f3; color:#fff; text-align:center; padding:12px; font-size:14px; margin-top:30px; }
   </style>
 </head>
 <body>
@@ -31,7 +36,7 @@
   <!-- Dashboard -->
   <section id="dashboard">
     <h3>Dashboard</h3>
-    <div id="dashboardContent">KPIs and Charts will appear here.</div>
+    <canvas id="dashboardChart"></canvas>
   </section>
 </div>
 
@@ -85,36 +90,49 @@
 <!-- Guided Tour -->
 <button onclick="startTour()">🚀 Start Guided Tour</button>
 
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs"></script>
+<footer>
+  Developed by Anil Sharma, Former General Manager, Central Bank of India
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
 
 <script>
-let pres=new PptxGenJS();
-let currentSlide=0;
+// Dashboard Chart
+function loadDashboard(){
+  const ctx=document.getElementById("dashboardChart").getContext("2d");
+  new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels:["Jan","Feb","Mar"],
+      datasets:[{label:"Sales",data:[30,50,70],backgroundColor:"#2196f3"}]
+    }
+  });
+}
+window.onload=()=>{ loadDashboard(); };
 
-// PPTX Smart Slide
+// PPTX Editor (simple simulation)
+let slides=[];
 function addSmartSlide(){
-  const slide=pres.addSlide();
-  slide.addText("Title",{x:1,y:0.5,fontSize:24,bold:true});
-  slide.addText("Bullet",{x:1,y:1.5,fontSize:18});
+  slides.push("Slide "+(slides.length+1));
   renderSlides();
 }
 function renderSlides(){
   const container=document.getElementById("slides");
   container.innerHTML="";
-  pres.slides.forEach((s,i)=>{
+  slides.forEach(s=>{
     const div=document.createElement("div");
-    div.textContent="Slide "+(i+1);
+    div.textContent=s;
     container.appendChild(div);
   });
 }
 
 // Presentation Mode
+let currentSlide=0;
 function renderPresentation(){
-  document.getElementById("presentation").innerHTML="Showing Slide "+(currentSlide+1);
+  document.getElementById("presentation").innerHTML=slides[currentSlide]||"No slides yet";
 }
-function nextSlide(){ if(currentSlide<pres.slides.length-1){currentSlide++;renderPresentation();} }
+function nextSlide(){ if(currentSlide<slides.length-1){currentSlide++;renderPresentation();} }
 function prevSlide(){ if(currentSlide>0){currentSlide--;renderPresentation();} }
 function toggleFullscreen(){
   const elem=document.getElementById("presentation");
